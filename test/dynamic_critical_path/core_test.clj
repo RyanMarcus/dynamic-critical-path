@@ -17,6 +17,25 @@
 ; along with dynamic-critical-path.  If not, see <http://www.gnu.org/licenses/>.
 ; 
 ; < end copyright > 
+; < begin copyright > 
+; Copyright Ryan Marcus 2017
+; 
+; This file is part of dynamic-critical-path.
+; 
+; dynamic-critical-path is free software: you can redistribute it and/or modify
+; it under the terms of the GNU General Public License as published by
+; the Free Software Foundation, either version 3 of the License, or
+; (at your option) any later version.
+; 
+; dynamic-critical-path is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+; 
+; You should have received a copy of the GNU General Public License
+; along with dynamic-critical-path.  If not, see <http://www.gnu.org/licenses/>.
+; 
+; < end copyright > 
 (ns dynamic-critical-path.core-test
   (:require [clojure.test :refer :all]
             [dynamic-critical-path.core :refer :all]
@@ -51,3 +70,33 @@
       (is (= (dynamic-critical-path dag) #{'("A" "B" "C" "E" "F" "G")
                                            '("D")}) "DCP corret"))
     ))
+
+(import java.util.HashMap)
+(import info.rmarcus.dynamic_critical_path.DynamicCriticalPath)
+(deftest dcp-java-wrapper-tests
+  (testing "Java wrapper"
+    (let [weights (HashMap.)
+          edges (HashMap.)
+          a (HashMap.)
+          b (HashMap.)
+          c (HashMap.)]
+      (do
+        (.put weights "A" (int 3))
+        (.put weights "B" (int 9))
+        (.put weights "C" (int 10))
+        (.put weights "D" (int 4))
+
+        (.put a "B" (int 5))
+        (.put a "C" (int 4))
+        (.put b "D" (int 6))
+        (.put c "D" (int 7))
+
+        (.put edges "A" a)
+        (.put edges "B" b)
+        (.put edges "C" c)
+        (let [result (DynamicCriticalPath/schedule weights edges)
+              iter (.iterator result)]
+          (is (= (.size result) 2))
+          (is (= (.size (.next iter)) 2))
+          (is (= (.size (.next iter)) 2)))))))
+          
