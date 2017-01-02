@@ -17,7 +17,7 @@
 ; along with dynamic-critical-path.  If not, see <http://www.gnu.org/licenses/>.
 ; 
 ; < end copyright > 
-(defproject dynamic-critical-path "0.2.4-SNAPSHOT"
+(defproject dynamic-critical-path "0.2.5"
   :description "The dynamic critical path (DCP) DAG scheduling algorithm"
   :url "https://github.com/RyanMarcus/dynamic-critical-path"
   :license {:name "GNU General Public License v3"
