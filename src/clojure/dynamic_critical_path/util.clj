@@ -17,25 +17,6 @@
 ; along with dynamic-critical-path.  If not, see <http://www.gnu.org/licenses/>.
 ; 
 ; < end copyright > 
-; < begin copyright > 
-; Copyright Ryan Marcus 2017
-; 
-; This file is part of dynamic-critical-path.
-; 
-; dynamic-critical-path is free software: you can redistribute it and/or modify
-; it under the terms of the GNU General Public License as published by
-; the Free Software Foundation, either version 3 of the License, or
-; (at your option) any later version.
-; 
-; dynamic-critical-path is distributed in the hope that it will be useful,
-; but WITHOUT ANY WARRANTY; without even the implied warranty of
-; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-; GNU General Public License for more details.
-; 
-; You should have received a copy of the GNU General Public License
-; along with dynamic-critical-path.  If not, see <http://www.gnu.org/licenses/>.
-; 
-; < end copyright > 
 (ns dynamic-critical-path.util
   (:require [clojure.math.combinatorics :as combo])
   (:use [clojure.set]))
@@ -180,7 +161,7 @@
 (defn evaluate-clusters
   "Takes as input a vertex, the critical child of that vertex, and a set of clusters and returns: the cluster where placing the vertex would minimize the sum of the start times for the vertex and the critical child, and the updated DAG"
   [vertex child clusters dag]
-  (let [candidates (map #(evaluate-cluster vertex child % dag) clusters)
+  (let [candidates (pmap #(evaluate-cluster vertex child % dag) clusters)
         best-result (reduce #(cond (< (second %1) (second %2)) %1 :else %2)
                             candidates)]
     (list (first best-result) (second (rest best-result)))))
