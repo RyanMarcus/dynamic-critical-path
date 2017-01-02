@@ -36,7 +36,7 @@
 ; along with dynamic-critical-path.  If not, see <http://www.gnu.org/licenses/>.
 ; 
 ; < end copyright > 
-(defproject dynamic-critical-path "0.1.0-SNAPSHOT"
+(defproject dynamic-critical-path "0.2.4"
   :description "The dynamic critical path (DCP) DAG scheduling algorithm"
   :url "https://github.com/RyanMarcus/dynamic-critical-path"
   :license {:name "GNU General Public License v3"
@@ -45,4 +45,4 @@
   :java-source-paths ["src/java"]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/math.combinatorics "0.1.3"]]
-  :aot [dynamic-critical-path.core])
+  :aot :all)

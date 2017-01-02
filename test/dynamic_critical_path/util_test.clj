@@ -108,8 +108,8 @@
     (is (= (next-to-schedule (allVertices dag) dag) '("B" "D")) "next-to-schedule"))
 
   (testing "scheduling ops"
-    (is (= (next-to-schedule #{"A" "C" "D"} dag) '("C" "D")) "next-to-schedule")
-    (is (= (next-to-schedule #{"A" "D"} dag) '("A" "B")) "next-to-schedule")
+    (is (= (next-to-schedule #{"A" "C" "D"} dag) '("A" "B")) "next-to-schedule")
+    (is (= (next-to-schedule #{"A" "B"} dag) '("B" "D")) "next-to-schedule")
     (is (= (next-to-schedule #{"D"} dag) '("D" nil)) "next-to-schedule")
 
     (let [result (evaluate-cluster "B" "D" '() dag)

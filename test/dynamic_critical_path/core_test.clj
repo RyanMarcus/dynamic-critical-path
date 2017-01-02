@@ -41,6 +41,8 @@
             [dynamic-critical-path.core :refer :all]
             [dynamic-critical-path.util :refer :all]))
 
+(set! *warn-on-reflection* true)
+
 (def allEdges '(("A" "B" 5)
                 ("B" "D" 6)
                 ("A" "C" 4)
@@ -54,7 +56,7 @@
 
 (deftest dcp-tests
   (testing "DCP"
-    (is (= (dynamic-critical-path dag) #{'("A" "B") '("C" "D")}) "DCP correct")
+    (is (= (dynamic-critical-path dag) #{'("A" "C" "B" "D")}) "DCP correct")
 
     (let [all-edges '(("A" "B" 5) ("B" "D" 600)
                       ("A" "C" 4) ("C" "D" 7))
@@ -88,7 +90,7 @@
 
         (.put a "B" (int 5))
         (.put a "C" (int 4))
-        (.put b "D" (int 6))
+        (.put b "D" (int 600))
         (.put c "D" (int 7))
 
         (.put edges "A" a)

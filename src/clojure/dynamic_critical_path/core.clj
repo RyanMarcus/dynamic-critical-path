@@ -38,8 +38,10 @@
 ; < end copyright > 
 (ns dynamic-critical-path.core
   (:use [clojure.set])
-  (:use [dynamic-critical-path.util]))
+  (:use [dynamic-critical-path.util])
+  (:gen-class))
 
+(set! *warn-on-reflection* true)
 
 
 (defn generateDAG [v-weights edges]
@@ -70,7 +72,7 @@
                                          clusters)
                                   new-cluster '())]
 
-           (dynamic-critical-path best-next-dag
+           (recur best-next-dag
                                   (set (filter #(not= % next-vertex)
                                                candidates))
                                   new-clusters))))

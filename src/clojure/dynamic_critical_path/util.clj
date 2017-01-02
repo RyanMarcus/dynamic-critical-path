@@ -40,6 +40,8 @@
   (:require [clojure.math.combinatorics :as combo])
   (:use [clojure.set]))
 
+(set! *warn-on-reflection* true)
+
 (defmacro mfilter [func m]
   `(into {} (filter ~func ~m)))
 
@@ -49,23 +51,23 @@
 (defrecord DAG [weights edges])
 
 
-(defn allVertices [dag]
+(defn allVertices [^DAG dag]
   (set (keys (.weights dag))))
 
-(defn getChildren [vertex dag]
+(defn getChildren [vertex ^DAG dag]
   (set (map first (get (.edges dag) vertex {}))))
 
 (defn getParents [vertex dag]
   (set (filter #(contains? (getChildren % dag) vertex)
                (allVertices dag))))
 
-(defn getEdgeWeight [parent child dag]
+(defn getEdgeWeight [parent child ^DAG dag]
   (second (first (filter #(= child (first %)) (get (.edges dag) parent)))))
 
-(defn getWeight [vertex dag]
+(defn getWeight [vertex ^DAG dag]
   (get (.weights dag) vertex))
 
-(defn removeVertex [vertex dag]
+(defn removeVertex [vertex ^DAG dag]
   (letfn [(eqVert [v] (not= (first v) vertex))]
     (->DAG (mfilter eqVert (.weights dag))
            (mfilter eqVert (apply hash-map
@@ -73,7 +75,7 @@
                                                  (filter eqVert (second %)))
                                           (.edges dag)))))))
 (defn remove-edge
-  [parent child dag]
+  [parent child ^DAG dag]
   (let [edges (.edges dag)]
     (->DAG (.weights dag)
            (assoc edges parent (filter #(not= (first %) child)
@@ -81,7 +83,7 @@
 
 (defn add-edge
   [parent child weight inpdag]
-  (let [dag (remove-edge parent child inpdag)
+  (let [^DAG dag (remove-edge parent child inpdag)
         edges (.edges dag)]
     (->DAG (.weights dag)
            (assoc edges parent (conj (get edges parent) (list child weight))))))
@@ -92,12 +94,13 @@
 (defn getEntryVertices [dag]
   (clojure.set/difference (set (allVertices dag))
                           (set (mapcat #(getChildren % dag) (allVertices dag)))))
-
-(defn toposort [dag]
-  (let [entryPoints (getEntryVertices dag)]
+(defn toposort-r [dag]
+  (let [entryPoints (getEntryVertices dag)
+        next (first entryPoints)]
     (cond (empty? entryPoints) '()
-          :else (conj (toposort (removeVertex (first entryPoints) dag))
-                      (first entryPoints)))))
+          :else (conj (toposort-r (removeVertex next dag)) next))))
+
+(def toposort (memoize toposort-r))
 
 (defn t-level-for-node [vertex tlist dag]
   (let [parents (getParents vertex dag)]
@@ -111,7 +114,7 @@
 (defn levels-recur [toplist tlist dag func]
   (cond (empty? toplist) tlist
         :else  (let [curr-vertex (first toplist)]
-                 (levels-recur
+                 (recur
                   (rest toplist)
                   (assoc tlist curr-vertex
                          (func curr-vertex tlist dag))
@@ -143,7 +146,7 @@
   (let [tlist (t-levels dag)
         blist (b-levels dag)
         mobility (merge-with #(+ %1 %2) tlist blist)]
-    (sort-by (juxt #(get mobility %) #(get t-levels %))
+    (sort-by (juxt #(get mobility %) #(get tlist %))
              (allVertices dag))))
 
 (defn next-to-schedule
