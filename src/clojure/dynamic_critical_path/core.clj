@@ -35,9 +35,9 @@
 
 (defn dynamic-critical-path
   "Clusters the vertices of the dag according to the DCP algorithm"
-  ([dag] (dynamic-critical-path dag (allVertices dag) '(())))
+  ([dag] (dynamic-critical-path dag (allVertices dag) '([])))
   ([dag candidates clusters]
-   (cond (empty? candidates) (set (filter #(not= % '()) clusters))
+   (cond (empty? candidates) (set (filter #(not= % '[]) clusters))
          :else
          (let [next (next-to-schedule candidates dag)
                next-vertex (first next)
@@ -49,9 +49,9 @@
                                                  dag)
                new-clusters (conj (filter #(and
                                             (not= % best-cluster)
-                                            (not= % '()))
+                                            (not= % '[]))
                                          clusters)
-                                  new-cluster '())]
+                                  new-cluster '[])]
 
            (recur best-next-dag
                                   (set (filter #(not= % next-vertex)

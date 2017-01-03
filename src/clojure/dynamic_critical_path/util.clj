@@ -74,7 +74,11 @@
 
 (defn getEntryVertices [dag]
   (clojure.set/difference (set (allVertices dag))
-                          (set (mapcat #(getChildren % dag) (allVertices dag)))))
+                          (set (mapcat #(getChildren % dag)
+                                       (allVertices dag)))))
+
+;; TODO: could be faster if we added all of the entryPoints to the
+;; sorted order each time
 (defn toposort-r [dag]
   (let [entryPoints (getEntryVertices dag)
         next (first entryPoints)]

@@ -38,6 +38,8 @@
     (is (= (count (allVertices dag)) 4) "all-vertices has correct count")
     (is (= (getChildren "C" dag) #{"D"}) "get-children returns single child")
     (is (= (getChildren "A" dag) #{"B" "C"}) "get-children returns multiple children")
+    (is (= (getChildren "D" dag) #{}) "get-children empty for leaf")
+    
     (is (= (getParents "A" dag) #{}) "get-parents is empty for root")
     (is (= (getParents "B" dag) #{"A"} ) "get-parents for single parent")
     (is (= (getParents "D" dag) #{"B" "C"}) "get-parents for multiple parents")
@@ -52,6 +54,7 @@
   (testing "DAG mutations"
     (is (= (count (allVertices (removeVertex "A" dag))) 3) "remove vertex")
     (is (= (count (allVertices (removeVertex "Q" dag))) 4) "remove fake vertex")
+
     (is (= (getEdgeWeight "A" "B" (removeVertex "A" dag)) nil) "removing vertex removes edges")
 
     (is (= (getEdgeWeight "A" "B" (remove-edge "A" "B" dag)) nil) "remove edge")
@@ -69,11 +72,23 @@
     (is (= (count (toposort dag)) 4) "toposort result size")
     (is (= (first (toposort dag)) "A") "toposort first result")
     (is (= (last (toposort dag)) "D") "toposort last result")
+
+    (let [v-weights {"A" 1 "B" 1 "C" 1 "D" 1 "E" 1 "F" 1 "G" 1}
+          edge-weights '(("A" "C" 1) ("A" "D" 1) ("A" "E" 1)
+                         ("A" "F" 1) ("A" "G" 1)
+                         ("C" "B" 1) ("D" "B" 1) ("E" "B" 1)
+                         ("F" "B" 1) ("G" "B" 1))
+          dag (generateDAG v-weights edge-weights)
+          topo (toposort dag)]
+      (is (= (count topo) 7) "toposort size")
+      (is (= (first topo) "A") "correct first result")
+      (is (= (last topo) "B")) "correct last result")
     ))
 
 (deftest utility-functions
   (testing "utility functions"
     (is (= (sort-cluster-by-topo '("C" "D" "A") dag) '("A" "C" "D")) "sort-cluster-by-topo")
+    (is (= (sort-cluster-by-topo '("D" "A") dag) '("A" "D")) "sort-cluster-by-topo pair")
     ))
 
 (deftest dcp-operations
