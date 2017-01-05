@@ -2,7 +2,7 @@
 
 ![Codeship status](https://codeship.com/projects/8bcaf1a0-b45f-0134-be92-665c05a5a8f8/status?branch=master) [![Clojars Project](https://img.shields.io/clojars/v/dynamic-critical-path.svg)](https://clojars.org/dynamic-critical-path)
 
-A Clojure library that implements the dynamic critical path (DCP) scheduling algorithm for DAGs. There's also a Java wrapper, so you can use this in Java projects seemlessly.
+A Clojure library that implements the dynamic critical path (DCP) scheduling algorithm for DAGs. There's also a Java wrapper, so you can use this in Java projects seemlessly. This is my first Clojure project, so any advice is appreciated. :)
 
 The dynamic critical path algorithm makes the following assumptions:
 
