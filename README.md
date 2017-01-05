@@ -25,6 +25,10 @@ With `leiningen` (for Clojure):
 ... or with Maven (for Java):
 
 ```xml
+<repository>
+  <id>clojars.org</id>
+  <url>http://clojars.org/repo</url>
+</repository>
 <dependency>
   <groupId>dynamic-critical-path</groupId>
   <artifactId>dynamic-critical-path</artifactId>
