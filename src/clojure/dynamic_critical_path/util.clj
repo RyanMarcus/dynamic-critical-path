@@ -77,13 +77,12 @@
                           (set (mapcat #(getChildren % dag)
                                        (allVertices dag)))))
 
-;; TODO: could be faster if we added all of the entryPoints to the
-;; sorted order each time
 (defn toposort-r [dag]
   (let [entryPoints (getEntryVertices dag)
-        next (first entryPoints)]
+        entryPointsRemoved (reduce #(removeVertex %2 %1) dag entryPoints)]
     (cond (empty? entryPoints) '()
-          :else (conj (toposort-r (removeVertex next dag)) next))))
+          :else (concat entryPoints (toposort-r entryPointsRemoved)))))
+
 
 (def toposort (memoize toposort-r))
 
